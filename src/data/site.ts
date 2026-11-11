@@ -2,14 +2,20 @@
 export const site = {
   name: 'Valentín Martínez',
   short: 'valentín.m',
-  role: 'Desarrollador full-stack',
+  role: 'Software y sistemas a medida',
   location: 'Córdoba Capital, Argentina',
   available: true,
   availableText: 'Tomando proyectos nuevos',
   tagline: 'Construyo sitios y sistemas que hacen vender a negocios reales.',
   heroNote: 'Un sitio bien hecho no se nota: se nota cuando entran pedidos.',
   intro:
-    'Diseño y programo de punta a punta: la tienda que ve el cliente, el panel donde se cargan pedidos y stock, y el servidor que lo sostiene. Trabajo con comercios y marcas que necesitan algo propio, rápido y fácil de manejar.',
+    'Creo software y sistemas a medida que se adaptan a cada negocio y empresa: los diseño, los armo y los dejo funcionando para que el negocio los maneje solo.',
+  // Párrafos de la página "Sobre mí".
+  about: [
+    'Soy de Córdoba Capital, Argentina. No soy programador de formación: soy alguien que diseña y crea, y que encontró en el software la forma de resolver problemas reales de negocios.',
+    'Hoy estoy armando una startup junto a mi socio. Creamos software y sistemas a medida, adaptables a cada negocio y empresa: tiendas online, paneles de gestión, turneros y herramientas con inteligencia artificial.',
+    'Me ocupo de punta a punta: entender cómo funciona el negocio, diseñar la experiencia y construir algo propio, rápido y fácil de usar.',
+  ],
   // Tu foto para la portada: poné el archivo en public/ (ej. public/yo.jpg) y escribí '/yo.jpg'.
   // Ideal: retrato vertical con fondo liso. El sitio le aplica el tono naranja solo.
   photo: '',
@@ -51,10 +57,14 @@ export const services = [
 ];
 
 export const skills = [
-  { group: 'Frontend', items: ['React', 'Next.js', 'Astro', 'TypeScript', 'Tailwind CSS', 'Vite'] },
-  { group: 'Backend', items: ['Node.js', 'Express', 'SQLite', 'Drizzle ORM', 'Zod', 'APIs REST'] },
-  { group: 'Producto', items: ['Paneles de gestión', 'Pedidos por WhatsApp', 'SEO técnico', 'Integración con IA'] },
-  { group: 'Infra', items: ['Vercel', 'Netlify', 'Docker', 'VPS', 'Git'] },
+  { group: 'Frontend', items: ['React', 'Next.js', 'Astro', 'TypeScript', 'JavaScript', 'HTML y CSS', 'Tailwind CSS', 'Vite', 'Three.js'] },
+  { group: 'Backend', items: ['Node.js', 'Express', 'APIs REST', 'SQLite', 'PostgreSQL', 'Drizzle ORM', 'Prisma', 'Zod', 'Supabase'] },
+  { group: 'Diseño', items: ['Figma', 'Diseño UI/UX', 'Identidad de marca', 'Prototipos', 'Diseño responsive', 'Animaciones web'] },
+  { group: 'IA y automatización', items: ['Claude API', 'OpenAI API', 'ElevenLabs', 'Web Speech API', 'n8n', 'Bots de Telegram', 'Agentes de IA'] },
+  { group: 'Producto', items: ['Tiendas online', 'Paneles de gestión', 'Turneros', 'Pedidos por WhatsApp', 'Estadísticas y reportes'] },
+  { group: 'Marketing', items: ['SEO técnico', 'Google Analytics', 'Meta Pixel', 'Landing pages', 'Contenido para redes'] },
+  { group: 'Infra', items: ['Vercel', 'Netlify', 'GitHub Pages', 'Docker', 'VPS', 'Cloudflare'] },
+  { group: 'Herramientas', items: ['Git', 'GitHub', 'VS Code', 'Claude Code', 'Notion', 'Linux'] },
 ];
 
 export const workSteps = [

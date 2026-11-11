@@ -18,8 +18,9 @@ const base = import.meta.env.BASE_URL.replace(/\/$/, '');
     </header>
     <div class="about">
       <div>
-        <p class="about-text reveal">Soy {site.name}, {site.role.toLowerCase()} de {site.location}. {site.intro}</p>
-        <p class="about-text reveal" style="--d:.08s; margin-top: 22px; color: var(--muted)">{site.heroNote}</p>
+        {site.about.map((t, i) => (
+          <p class="about-text reveal" style={`--d:${i * 0.08}s; margin-top:${i ? 22 : 0}px${i ? '; color: var(--muted)' : ''}`}>{t}</p>
+        ))}
       </div>
       <div class="stats reveal" style="--d:.12s">
         <div class="stat cream"><strong>{pad(projects.length)}</strong><span>proyectos</span></div>
