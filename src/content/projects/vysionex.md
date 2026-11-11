@@ -9,6 +9,7 @@ featured: false
 client: false
 order: 7
 color: "#4fd1a5"
+cover: "/proyectos/vysionex.jpg"
 live: "https://vysionex-landing-page.vercel.app"
 repo: "https://github.com/ValenM452/VysionexLandingPage"
 ---

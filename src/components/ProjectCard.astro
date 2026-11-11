@@ -22,6 +22,10 @@ const href = `${base}/proyectos/${project.id}/`;
     <ul class="stack">
       {p.stack.slice(0, size === 'big' ? 5 : 3).map((s) => <li class="chip">{s}</li>)}
     </ul>
+    <div class="links mono">
+      <a href={href}>Ver proyecto →</a>
+      {p.live && <a href={p.live} target="_blank" rel="noopener" class="live">Visitar sitio ↗</a>}
+    </div>
   </div>
 </article>
 
@@ -46,5 +50,8 @@ const href = `${base}/proyectos/${project.id}/`;
   .card:hover .go { transform: translate(3px, -3px); }
   p { margin: 0; color: var(--muted); font-size: 15.5px; }
   .stack { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: auto 0 0; padding: 8px 0 0; }
+  .links { display: flex; gap: 18px; flex-wrap: wrap; padding-top: 6px; font-size: 13px; }
+  .links a { color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .links a:hover, .links .live { color: var(--accent); }
   .big h3 { font-size: clamp(28px, 3.2vw, 38px); }
 </style>

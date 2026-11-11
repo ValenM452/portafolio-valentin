@@ -8,7 +8,6 @@ status: en desarrollo
 featured: false
 order: 5
 color: "#f2c94c"
-live: "https://lavoro-landing.vercel.app"
 ---
 
 ## El desafío

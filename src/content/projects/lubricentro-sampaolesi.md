@@ -8,6 +8,7 @@ status: publicado
 featured: true
 order: 3
 color: "#3fa9f5"
+cover: "/proyectos/lubricentro-sampaolesi.jpg"
 live: "https://lubricentro-sampaolesi.vercel.app"
 ---
 

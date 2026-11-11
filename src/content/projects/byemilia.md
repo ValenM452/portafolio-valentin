@@ -8,6 +8,7 @@ status: publicado
 featured: true
 order: 4
 color: "#d98fb0"
+cover: "/proyectos/byemilia.jpg"
 live: "https://byemiliacrochet.vercel.app"
 ---
 

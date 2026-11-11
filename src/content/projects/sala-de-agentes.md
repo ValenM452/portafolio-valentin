@@ -8,7 +8,7 @@ status: privado
 featured: true
 order: 2
 color: "#8b5cf6"
-live: "https://sala-de-agentes-two.vercel.app"
+cover: "/proyectos/sala-de-agentes.jpg"
 ---
 
 ## El desafío

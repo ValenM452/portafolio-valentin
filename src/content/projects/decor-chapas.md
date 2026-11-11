@@ -8,6 +8,7 @@ status: publicado
 featured: true
 order: 1
 color: "#e8763a"
+cover: "/proyectos/decor-chapas.jpg"
 live: "https://decor-chapas.vercel.app"
 ---
 
