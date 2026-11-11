@@ -1,0 +1,34 @@
+---
+// Bloque de contacto: cierra cada página.
+import { site } from '../data/site';
+const last = site.name.split(' ').slice(1).join(' ');
+const contacts = [
+  { label: 'Email', value: site.email, href: `mailto:${site.email}` },
+  { label: 'GitHub', value: site.github.replace(/^https?:\/\/(www\.)?/, ''), href: site.github },
+  { label: 'LinkedIn', value: 'Perfil', href: site.linkedin },
+  { label: 'WhatsApp', value: 'Mandar mensaje', href: site.whatsapp },
+].filter((c) => c.href);
+---
+<section id="contacto" class="contact">
+  <div class="wrap">
+    <p class="mono kicker-c">Eso es todo por ahora.</p>
+    <h2 class="big-cta">¿Tenés un proyecto en mente? <em>Hablemos.</em></h2>
+    <a class="mail" href={`mailto:${site.email}`}>{site.email}<span aria-hidden="true">↗</span></a>
+    <ul class="contacts">
+      {contacts.map((c) => (
+        <li>
+          <a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
+            <span class="mono">{c.label}</span><span>{c.value}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+  <svg class="wordmark" viewBox="0 0 1000 170" aria-hidden="true">
+    <text x="0" y="150" textLength="1000" lengthAdjust="spacingAndGlyphs">{last.toUpperCase()}</text>
+  </svg>
+</section>
+
+<style>
+  .kicker-c { color: var(--muted); font-size: 13px; margin: 0 0 18px; }
+</style>

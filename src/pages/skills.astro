@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Contact from '../components/Contact.astro';
+import { skills } from '../data/site';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Skills" description="Tecnologías y herramientas con las que trabajo.">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker mono">Skills</p>
+      <h1>Con qué <em>trabajo.</em></h1>
+      <p class="lead-2">Las herramientas que uso todos los días para pasar de una idea a un sitio publicado y funcionando.</p>
+    </header>
+    <div class="skills">
+      {skills.map((g, i) => (
+        <div class={`skill-card reveal ${i === 1 ? 'orange' : i === 2 ? 'cream' : ''}`} style={`--d:${i * 0.06}s`}>
+          <h3 class="mono">{g.group}</h3>
+          <ul>{g.items.map((it) => <li>{it}</li>)}</ul>
+        </div>
+      ))}
+    </div>
+    <nav class="next-page" aria-label="Siguiente sección">
+      <div><small class="mono">Siguiente</small><a href={`${base}/sobre-mi/`}>Sobre mí →</a></div>
+    </nav>
+  </div>
+  <Contact />
+</Base>

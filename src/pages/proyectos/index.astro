@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import Contact from '../../components/Contact.astro';
+import { site } from '../../data/site';
+
+const projects = (await getCollection('projects', (p) => !p.data.draft))
+  .sort((a, b) => a.data.order - b.data.order || b.data.year - a.data.year);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Proyectos" description="Tiendas online, sistemas de gestión, sitios de marca y herramientas con IA.">
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker mono">Proyectos · {String(projects.length).padStart(2, '0')}</p>
+      <h1>Lo que <em>construí.</em></h1>
+      <p class="lead-2">Tiendas, sistemas y herramientas para negocios reales y proyectos propios. Entrá a cada uno para ver qué hace y cómo está hecho.</p>
+    </header>
+    <div class="works">
+      {projects.map((p, i) => <ProjectCard project={p} index={i} />)}
+    </div>
+    <nav class="next-page" aria-label="Siguiente sección">
+      <div><small class="mono">Siguiente</small><a href={`${base}/servicios/`}>Servicios →</a></div>
+      <a class="link-arrow" href={site.github} target="_blank" rel="noopener" style="font-size:16px">Más en GitHub <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+  <Contact />
+</Base>

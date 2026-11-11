@@ -9,6 +9,7 @@ featured: false
 client: false
 order: 6
 color: "#8b7cf6"
+cover: "/proyectos/nova.jpg"
 ---
 
 ## La idea

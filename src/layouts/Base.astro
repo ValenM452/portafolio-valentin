@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import '../styles/pages.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
@@ -33,6 +34,8 @@ const base = import.meta.env.BASE_URL;
         for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
       }, { rootMargin: '0px 0px -8% 0px' });
       document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+      // Red de seguridad: si el observer no dispara (pestaña en segundo plano, capturas), mostrar todo igual.
+      setTimeout(() => document.querySelectorAll('.reveal:not(.in)').forEach((el) => el.classList.add('in')), 1800);
 
       // Brillo que sigue al cursor en las tarjetas
       document.querySelectorAll<HTMLElement>('[data-glow]').forEach((el) => {

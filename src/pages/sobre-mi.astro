@@ -1,0 +1,50 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Contact from '../components/Contact.astro';
+import { site, skills, workSteps } from '../data/site';
+
+const projects = await getCollection('projects', (p) => !p.data.draft);
+const clientCount = projects.filter((p) => p.data.client).length;
+const techCount = new Set(skills.flatMap((s) => s.items)).size;
+const pad = (n: number) => String(n).padStart(2, '0');
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title="Sobre mí" description={site.intro}>
+  <div class="wrap">
+    <header class="page-head">
+      <p class="kicker mono">Sobre mí</p>
+      <h1>Quién <em>soy.</em></h1>
+    </header>
+    <div class="about">
+      <div>
+        <p class="about-text reveal">Soy {site.name}, {site.role.toLowerCase()} de {site.location}. {site.intro}</p>
+        <p class="about-text reveal" style="--d:.08s; margin-top: 22px; color: var(--muted)">{site.heroNote}</p>
+      </div>
+      <div class="stats reveal" style="--d:.12s">
+        <div class="stat cream"><strong>{pad(projects.length)}</strong><span>proyectos</span></div>
+        <div class="stat orange"><strong>{pad(clientCount)}</strong><span>negocios reales</span></div>
+        <div class="stat dark"><strong>{techCount}+</strong><span>herramientas</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section id="proceso" class="section">
+    <div class="wrap">
+      <header class="sec-head"><h2 class="section-title">Cómo trabajo</h2></header>
+      <ol class="steps">
+        {workSteps.map((s) => (
+          <li class="step">
+            <span class="n mono">{s.n}</span>
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+      <nav class="next-page" aria-label="Siguiente sección">
+        <div><small class="mono">Siguiente</small><a href={`${base}/proyectos/`}>Proyectos →</a></div>
+      </nav>
+    </div>
+  </section>
+  <Contact />
+</Base>

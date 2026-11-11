@@ -2,26 +2,18 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import { site, services, skills, workSteps } from '../data/site';
+import Contact from '../components/Contact.astro';
+import { site } from '../data/site';
 
 const projects = (await getCollection('projects', (p) => !p.data.draft))
   .sort((a, b) => a.data.order - b.data.order || b.data.year - a.data.year);
-const clientCount = projects.filter((p) => p.data.client).length;
-const techCount = new Set(skills.flatMap((s) => s.items)).size;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const photo = site.photo ? (site.photo.startsWith('http') ? site.photo : `${base}${site.photo}`) : '';
 const [first, ...lastParts] = site.name.split(' ');
 const last = lastParts.join(' ');
-const pad = (n: number) => String(n).padStart(2, '0');
-const contacts = [
-  { label: 'Email', value: site.email, href: `mailto:${site.email}` },
-  { label: 'GitHub', value: site.github.replace(/^https?:\/\/(www\.)?/, ''), href: site.github },
-  { label: 'LinkedIn', value: 'Perfil', href: site.linkedin },
-  { label: 'WhatsApp', value: 'Mandar mensaje', href: site.whatsapp },
-].filter((c) => c.href);
 ---
 <Base>
-  <!-- 1. INICIO -->
+  <!-- Inicio -->
   <section id="inicio" class="hero-wrap">
     <div class="hero">
       <div class="hero-bg" aria-hidden="true"></div>
@@ -36,9 +28,9 @@ const contacts = [
         </h1>
         <p class="lead reveal" style="--d:.12s">{site.tagline}</p>
         <div class="hero-cta reveal" style="--d:.18s">
-          <a class="btn btn-light" href="#proyectos">Ver proyectos <span class="arrow">↗</span></a>
+          <a class="btn btn-light" href={`${base}/proyectos/`}>Ver proyectos <span class="arrow">↗</span></a>
           {site.cv
-            ? <a class="btn btn-ghost" href={site.cv} download>Descargar CV</a>
+            ? <a class="btn btn-ghost" href={`${base}${site.cv}`} download>Descargar CV</a>
             : <a class="btn btn-ghost" href="#contacto">Contactar</a>}
         </div>
         <p class="loc mono reveal" style="--d:.24s">{site.location}</p>
@@ -51,360 +43,34 @@ const contacts = [
     </div>
   </section>
 
-  <!-- 2. SOBRE MÍ -->
-  <section id="sobre-mi" class="section">
-    <div class="wrap">
-      <header class="sec-head">
-        <h2 class="section-title">Sobre mí</h2>
-      </header>
-      <div class="about">
-        <p class="about-text">{site.intro}</p>
-        <div class="stats">
-          <div class="stat cream"><strong>{pad(projects.length)}</strong><span>proyectos</span></div>
-          <div class="stat orange"><strong>{pad(clientCount)}</strong><span>negocios reales</span></div>
-          <div class="stat dark"><strong>{techCount}+</strong><span>herramientas</span></div>
-        </div>
+  <!-- Presentación corta -->
+  <section class="section">
+    <div class="wrap intro-row">
+      <p class="about-text reveal">
+        Hola, soy {first}. Vivo en {site.location.split(',')[0]} y {site.intro.charAt(0).toLowerCase()}{site.intro.slice(1)}
+      </p>
+      <div class="intro-side reveal" style="--d:.1s">
+        <p>{site.heroNote}</p>
+        <a class="link-arrow" href={`${base}/sobre-mi/`}>Más sobre mí <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>
 
-  <!-- 3. PROYECTOS (carrusel) -->
-  <section id="proyectos" class="section projects">
+  <!-- Algunos trabajos -->
+  <section id="proyectos" class="section">
     <div class="wrap">
-      <header class="sec-head with-controls">
-        <div>
-          <h2 class="section-title">Proyectos</h2>
-          <p class="hint mono">Deslizá o usá las flechas para elegir un proyecto.</p>
-        </div>
-        <div class="controls">
-          <span class="counter mono"><b data-current>01</b> / {pad(projects.length)}</span>
-          <button class="nav-btn" data-prev aria-label="Proyecto anterior">←</button>
-          <button class="nav-btn" data-next aria-label="Proyecto siguiente">→</button>
-        </div>
+      <header class="works-head">
+        <h2 class="section-title">Algunos de mis trabajos</h2>
+        <p>Cada proyecto tiene su página con lo que hice y cómo. Más código en mi <a href={site.github} target="_blank" rel="noopener">GitHub</a>.</p>
       </header>
-    </div>
-    <div class="carousel" data-carousel>
-      <ul class="track" data-track>
-        {projects.map((p, i) => (
-          <li class="slide" style={`--i:${i}`}>
-            <div class="floater"><ProjectCard project={p} index={i} /></div>
-          </li>
-        ))}
-      </ul>
-    </div>
-    <div class="wrap">
-      <div class="dots" role="tablist" aria-label="Elegir proyecto">
-        {projects.map((p, i) => <button class="dot-btn" data-dot={i} aria-label={p.data.title}></button>)}
+      <div class="works">
+        {projects.slice(0, 4).map((p, i) => <ProjectCard project={p} index={i} />)}
+      </div>
+      <div class="more">
+        <a class="btn" href={`${base}/proyectos/`}>Explorar los {projects.length} proyectos <span class="arrow">↗</span></a>
       </div>
     </div>
   </section>
 
-  <!-- 4. SERVICIOS -->
-  <section id="servicios" class="section services">
-    <div class="wrap">
-      <header class="sec-head">
-        <h2 class="section-title">Servicios</h2>
-      </header>
-      <div class="acc">
-        {services.map((s, i) => (
-          <details class="acc-item" open={i === 0}>
-            <summary>
-              <span class="mono idx">[{pad(i + 1)}]</span>
-              <span class="acc-title">{s.title}</span>
-              <span class="acc-icon" aria-hidden="true">↘</span>
-            </summary>
-            <div class="acc-body">
-              <p>{s.text}</p>
-              <ul>{s.tags.map((t) => <li class="chip">{t}</li>)}</ul>
-            </div>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 5. SKILLS -->
-  <section id="skills" class="section">
-    <div class="wrap">
-      <header class="sec-head">
-        <h2 class="section-title">Skills</h2>
-      </header>
-      <div class="skills">
-        {skills.map((g, i) => (
-          <div class={`skill-card ${i === 1 ? 'orange' : i === 2 ? 'cream' : ''}`}>
-            <h3 class="mono">{g.group}</h3>
-            <ul>{g.items.map((it) => <li>{it}</li>)}</ul>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 6. PROCESO -->
-  <section id="proceso" class="section">
-    <div class="wrap">
-      <header class="sec-head">
-        <h2 class="section-title">Cómo trabajo</h2>
-      </header>
-      <ol class="steps">
-        {workSteps.map((s, i) => (
-          <li class="step">
-            <span class="n mono">{s.n}</span>
-            <h3>{s.title}</h3>
-            <p>{s.text}</p>
-          </li>
-        ))}
-      </ol>
-    </div>
-  </section>
-
-  <!-- 7. CONTACTO -->
-  <section id="contacto" class="contact">
-    <div class="wrap">
-      <h2 class="big-cta">¿Tu negocio necesita algo propio? Hablemos.</h2>
-      <a class="mail" href={`mailto:${site.email}`}>{site.email}<span aria-hidden="true">↗</span></a>
-      <ul class="contacts">
-        {contacts.map((c, i) => (
-          <li>
-            <a href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel="noopener">
-              <span class="mono">{c.label}</span><span>{c.value}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
-    <svg class="wordmark" viewBox="0 0 1000 170" aria-hidden="true">
-      <text x="0" y="150" textLength="1000" lengthAdjust="spacingAndGlyphs">{last.toUpperCase()}</text>
-    </svg>
-  </section>
+  <Contact />
 </Base>
-
-<script>
-  // Carrusel: flechas, puntos, arrastre con mouse y swipe nativo en celular.
-  const root = document.querySelector<HTMLElement>('[data-carousel]');
-  const track = document.querySelector<HTMLElement>('[data-track]');
-  if (root && track) {
-    const slides = [...track.children] as HTMLElement[];
-    const dots = [...document.querySelectorAll<HTMLButtonElement>('[data-dot]')];
-    const current = document.querySelector('[data-current]');
-    let active = 0;
-    let locked = false;
-    let unlock: ReturnType<typeof setTimeout>;
-    const paint = () => {
-      slides.forEach((s, i) => s.classList.toggle('is-active', i === active));
-      dots.forEach((d, i) => d.setAttribute('aria-selected', String(i === active)));
-      if (current) current.textContent = String(active + 1).padStart(2, '0');
-    };
-
-    const go = (i: number) => {
-      const n = Math.max(0, Math.min(slides.length - 1, i));
-      const s = slides[n];
-      active = n;
-      locked = true;
-      clearTimeout(unlock);
-      unlock = setTimeout(() => { locked = false; }, 900);
-      paint();
-      track.scrollTo({ left: s.offsetLeft - (track.clientWidth - s.offsetWidth) / 2, behavior: 'smooth' });
-    };
-    const update = () => {
-      const mid = track.scrollLeft + track.clientWidth / 2;
-      if (locked) return;
-      let best = 0, dist = Infinity;
-      slides.forEach((s, i) => {
-        const d = Math.abs(s.offsetLeft + s.offsetWidth / 2 - mid);
-        if (d < dist) { dist = d; best = i; }
-      });
-      active = best;
-      paint();
-    };
-
-    document.querySelector('[data-prev]')?.addEventListener('click', () => go(active - 1));
-    document.querySelector('[data-next]')?.addEventListener('click', () => go(active + 1));
-    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
-    slides.forEach((s, i) => s.addEventListener('click', (e) => {
-      if (i !== active) { e.preventDefault(); go(i); }
-    }, true));
-    track.addEventListener('scroll', () => { if (!locked) requestAnimationFrame(update); }, { passive: true });
-    root.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight') go(active + 1);
-      if (e.key === 'ArrowLeft') go(active - 1);
-    });
-
-    // Arrastre con mouse (en táctil ya funciona el swipe nativo)
-    let down = false, startX = 0, startLeft = 0, moved = false;
-    track.addEventListener('pointerdown', (e) => {
-      if (e.pointerType !== 'mouse') return;
-      down = true; moved = false; startX = e.clientX; startLeft = track.scrollLeft;
-      track.classList.add('dragging');
-    });
-    window.addEventListener('pointermove', (e) => {
-      if (!down) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 5) moved = true;
-      track.scrollLeft = startLeft - dx;
-    });
-    window.addEventListener('pointerup', () => {
-      if (!down) return;
-      down = false;
-      track.classList.remove('dragging');
-      go(active);
-    });
-    track.addEventListener('click', (e) => { if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; } }, true);
-    track.addEventListener('dragstart', (e) => e.preventDefault());
-
-    update();
-  }
-</script>
-
-<style>
-  /* ---------- Encabezados de sección ---------- */
-  .sec-head { position: relative; margin-bottom: clamp(32px, 5vw, 56px); }
-  .sec-num { position: absolute; right: 0; top: 0; color: var(--dim); font-size: 13px; }
-  .with-controls { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
-  .with-controls .sec-num { position: static; display: block; margin-bottom: 8px; }
-  .hint { color: var(--dim); margin: 14px 0 0; font-size: 12.5px; }
-
-  /* ---------- 1. Inicio ---------- */
-  .hero-wrap { padding: 84px var(--gutter) 0; max-width: calc(var(--wrap) + 2 * var(--gutter)); margin: 0 auto; }
-  .hero { position: relative; overflow: hidden; isolation: isolate; border-radius: 28px; min-height: min(720px, calc(100svh - 110px)); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); align-items: center; gap: 24px; padding: clamp(28px, 5vw, 64px); }
-  .hero-bg { position: absolute; inset: 0; z-index: -1; background:
-    radial-gradient(55% 75% at 72% 45%, #ff7a35 0%, transparent 70%),
-    radial-gradient(80% 90% at 0% 0%, #ff5b1f 0%, transparent 60%),
-    linear-gradient(160deg, #e2451a 0%, #9c2410 50%, #2a0c06 100%); }
-  .hi { display: flex; align-items: center; gap: 10px; color: #ffe3d0; margin: 0 0 22px; font-size: 13px; }
-  .dot { width: 9px; height: 9px; border-radius: 50%; background: #fff; animation: ping 2s infinite; }
-  @keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(255,255,255,.7); } 70%, 100% { box-shadow: 0 0 0 10px rgba(255,255,255,0); } }
-  h1 { margin: 0; color: #fff; }
-  .name { display: block; font-size: clamp(44px, 6.6vw, 96px); line-height: 0.92; letter-spacing: -0.035em; font-weight: 700; font-stretch: 116%; }
-  .role { display: block; margin-top: 14px; font-size: clamp(20px, 2.4vw, 30px); font-weight: 500; font-stretch: 110%; color: #ffd9c2; letter-spacing: -0.01em; }
-  .lead { margin: 22px 0 0; max-width: 470px; color: rgba(255,255,255,.82); font-size: clamp(16px, 1.6vw, 19px); line-height: 1.5; }
-  .hero-cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 30px; }
-  .btn-ghost { color: #fff; border-color: rgba(255,255,255,.4); }
-  .loc { margin: 28px 0 0; color: rgba(255,255,255,.6); font-size: 12px; }
-  .hero-figure { display: flex; justify-content: center; align-items: center; }
-  .hero-figure img { width: 100%; max-width: 420px; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 24px; filter: grayscale(1) contrast(1.15); mix-blend-mode: multiply; }
-  .sun { width: min(100%, 380px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center;
-    background: radial-gradient(circle at 35% 30%, #ffd2b0 0%, #ff8a4c 25%, #e2451a 55%, #4a1407 100%);
-    box-shadow: 0 0 120px 30px rgba(255, 110, 50, .45), inset -30px -40px 80px rgba(40, 8, 2, .55);
-    animation: float 8s ease-in-out infinite alternate; }
-  .sun span { font-size: clamp(70px, 9vw, 140px); font-weight: 800; font-stretch: 125%; letter-spacing: -0.06em; color: rgba(20, 6, 2, .82); }
-  @keyframes float { to { transform: translateY(-16px) rotate(-3deg); } }
-
-  /* ---------- 2. Sobre mí ---------- */
-  .about { display: grid; grid-template-columns: 1.2fr 1fr; gap: clamp(24px, 5vw, 72px); align-items: start; }
-  .about-text { margin: 0; font-size: clamp(19px, 2vw, 24px); line-height: 1.45; font-stretch: 104%; color: #e6dcd0; }
-  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-  .stat { border-radius: var(--radius); padding: 22px 18px; min-height: 150px; display: flex; flex-direction: column; justify-content: space-between; }
-  .stat strong { font-size: clamp(40px, 4.4vw, 60px); line-height: 0.9; font-weight: 600; font-stretch: 110%; letter-spacing: -0.04em; }
-  .stat span { font-size: 14px; font-weight: 600; }
-  .cream { background: var(--cream); color: var(--ink); }
-  .orange { background: linear-gradient(150deg, #ff6a2a, #d8380f); color: #fff; }
-  .dark { background: var(--bg-2); border: 1px solid var(--line); }
-
-  /* ---------- 3. Proyectos (carrusel flotante) ---------- */
-  .projects { overflow: hidden; position: relative; }
-  .projects::before { content: ''; position: absolute; left: 50%; top: 58%; width: 80vmax; height: 40vmax; transform: translate(-50%, -50%); background: radial-gradient(closest-side, rgba(255, 91, 31, .2), transparent); pointer-events: none; }
-  .controls { display: flex; align-items: center; gap: 10px; }
-  .counter { color: var(--muted); margin-right: 8px; }
-  .counter b { color: var(--text); font-weight: 500; }
-  .nav-btn { width: 52px; height: 52px; border-radius: 50%; border: 1px solid var(--line); background: var(--bg-2); color: var(--text); font-size: 18px; cursor: pointer; transition: background .2s, border-color .2s, transform .2s; }
-  .nav-btn:hover { background: var(--accent); border-color: var(--accent); transform: scale(1.06); }
-
-  .carousel { position: relative; }
-  .track {
-    list-style: none; margin: 0; padding: 40px max(var(--gutter), calc(50vw - 200px)) 70px;
-    display: flex; gap: clamp(18px, 3vw, 36px);
-    overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
-    cursor: grab; user-select: none;
-  }
-  .track::-webkit-scrollbar { display: none; }
-  .track.dragging { cursor: grabbing; scroll-snap-type: none; }
-  .slide { flex: 0 0 min(400px, 82vw); scroll-snap-align: center; perspective: 1200px; }
-  .floater { position: relative; height: 100%; transition: transform .6s cubic-bezier(.2,.7,.2,1), opacity .6s, filter .6s; transform: scale(.88) rotateY(var(--ry, 0deg)); opacity: .45; filter: saturate(.6); }
-  .floater::after { content: ''; position: absolute; left: 12%; right: 12%; bottom: -46px; height: 22px; border-radius: 50%; background: radial-gradient(closest-side, rgba(0,0,0,.75), transparent); animation: shadow 6s ease-in-out infinite; animation-delay: calc(var(--i) * -0.9s); }
-  .floater > :global(.card) { height: 100%; animation: bob 6s ease-in-out infinite; animation-delay: calc(var(--i) * -0.9s); box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); }
-  .slide.is-active .floater { transform: none; opacity: 1; filter: none; }
-  .slide.is-active .floater > :global(.card) { border-color: rgba(255, 91, 31, .5); box-shadow: 0 40px 80px -24px rgba(255, 91, 31, .35), 0 30px 60px -20px rgba(0,0,0,.7); }
-  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
-  @keyframes shadow { 0%, 100% { transform: scaleX(1); opacity: .8; } 50% { transform: scaleX(.8); opacity: .45; } }
-
-  .dots { display: flex; justify-content: center; gap: 8px; }
-  .dot-btn { width: 8px; height: 8px; padding: 0; border-radius: 999px; border: 0; background: var(--line); cursor: pointer; transition: width .3s, background .3s; }
-  .dot-btn[aria-selected='true'] { width: 28px; background: var(--accent); }
-
-  /* ---------- 4. Servicios ---------- */
-  .services { background: #000; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .acc { border-top: 1px solid var(--line); }
-  .acc-item { border-bottom: 1px solid var(--line); }
-  summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 90px 1fr 44px; align-items: center; gap: 16px; padding: 26px 0; }
-  summary::-webkit-details-marker { display: none; }
-  .idx { color: var(--muted); }
-  .acc-title { font-size: clamp(22px, 3.4vw, 42px); font-weight: 600; font-stretch: 122%; text-transform: uppercase; line-height: 1; transition: color .2s; }
-  summary:hover .acc-title { color: var(--accent-2); }
-  .acc-icon { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--surface); color: var(--muted); transition: transform .3s, background .3s, color .3s; }
-  details[open] .acc-icon { transform: rotate(-90deg); background: var(--accent); color: #fff; }
-  .acc-body { padding: 0 0 28px 106px; }
-  .acc-body p { margin: 0 0 16px; max-width: 560px; color: var(--muted); font-size: 17px; }
-  .acc-body ul { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; }
-
-  /* ---------- 5. Skills ---------- */
-  .skills { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
-  .skill-card { border-radius: var(--radius); padding: 24px; background: var(--bg-2); border: 1px solid var(--line); }
-  .skill-card.orange, .skill-card.cream { border-color: transparent; }
-  .skill-card h3 { margin: 0 0 18px; font-size: 13px; font-weight: 500; color: var(--accent); }
-  .skill-card.orange h3 { color: #ffe0cc; }
-  .skill-card.cream h3 { color: #c2410c; }
-  .skill-card ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-  .skill-card li { font-size: 17px; font-weight: 500; font-stretch: 106%; }
-
-  /* ---------- 6. Proceso ---------- */
-  .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border-top: 1px solid var(--line); }
-  .step { padding: 26px 24px 8px 0; border-right: 1px solid var(--line); margin-right: 24px; }
-  .step:last-child { border-right: 0; margin-right: 0; }
-  .step .n { color: var(--accent); }
-  .step h3 { margin: 28px 0 10px; font-size: 22px; letter-spacing: -0.02em; line-height: 1.1; font-weight: 600; font-stretch: 112%; }
-  .step p { margin: 0; font-size: 15px; color: var(--muted); }
-
-  /* ---------- 7. Contacto ---------- */
-  .contact { position: relative; overflow: hidden; padding-top: clamp(72px, 12vw, 140px); border-top: 1px solid var(--line); background: radial-gradient(70% 60% at 50% 115%, rgba(255, 91, 31, .55), transparent 70%); }
-  .big-cta { font-size: clamp(38px, 6.8vw, 96px); line-height: 0.96; letter-spacing: -0.04em; margin: 0 0 32px; font-weight: 700; font-stretch: 115%; max-width: 16ch; }
-  .big-cta em { font-style: normal; color: var(--accent); }
-  .mail { display: inline-flex; gap: 12px; align-items: baseline; font-size: clamp(20px, 3.4vw, 40px); text-decoration: none; border-bottom: 2px solid var(--accent); padding-bottom: 4px; word-break: break-all; }
-  .mail:hover { color: var(--accent); }
-  .contacts { list-style: none; padding: 0; margin: clamp(40px, 6vw, 64px) 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
-  .contacts a { display: flex; justify-content: space-between; gap: 12px; padding: 18px 20px; border: 1px solid var(--line); border-radius: 14px; text-decoration: none; background: rgba(10,8,7,.5); transition: border-color 0.2s; }
-  .contacts a:hover { border-color: var(--accent); }
-  .contacts .mono { color: var(--muted); }
-  .wordmark { display: block; width: calc(100% - 2 * var(--gutter)); max-width: var(--wrap); margin: clamp(56px, 8vw, 96px) auto 0; overflow: visible; }
-  .wordmark text { font-family: var(--display); font-weight: 800; font-stretch: 125%; font-size: 168px; fill: var(--text); letter-spacing: -4px; }
-
-  /* ---------- Responsive ---------- */
-  @media (max-width: 960px) {
-    .about { grid-template-columns: 1fr; }
-    .skills { grid-template-columns: repeat(2, 1fr); }
-    .steps { grid-template-columns: repeat(2, 1fr); }
-    .step:nth-child(2) { border-right: 0; margin-right: 0; }
-  }
-  @media (max-width: 720px) {
-    .hero-wrap { padding-top: 78px; }
-    .hero { grid-template-columns: minmax(0, 1fr); min-height: 0; border-radius: 22px; padding-bottom: 36px; }
-    .hero-figure { order: -1; }
-    .sun { width: 58%; }
-    .name { font-size: 11.5vw; font-stretch: 106%; }
-    .hero-cta .btn { flex: 1; justify-content: center; }
-    .sec-num { display: none; }
-    .with-controls .controls { width: 100%; justify-content: flex-end; }
-    .nav-btn { width: 46px; height: 46px; }
-    .stats { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .stat { min-height: 120px; padding: 16px 14px; }
-    .stat span { font-size: 12.5px; }
-    .floater { transform: scale(.92); }
-    summary { grid-template-columns: 1fr 40px; padding: 22px 0; }
-    .idx { grid-column: 1 / -1; }
-    .acc-body { padding-left: 0; }
-    .skills { grid-template-columns: 1fr; }
-    .steps { grid-template-columns: 1fr; }
-    .step { border-right: 0; margin-right: 0; border-bottom: 1px solid var(--line); padding-bottom: 22px; }
-    .step h3 { margin-top: 14px; }
-  }
-</style>

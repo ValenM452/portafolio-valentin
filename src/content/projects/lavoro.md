@@ -8,6 +8,9 @@ status: en desarrollo
 featured: false
 order: 5
 color: "#f2c94c"
+cover: "/proyectos/lavoro.jpg"
+live: "https://lavoro-system.vercel.app"
+repo: "https://github.com/ValenM452/LavoroSystem"
 ---
 
 ## El desafío

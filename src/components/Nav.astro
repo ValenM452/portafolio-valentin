@@ -2,11 +2,14 @@
 import { site } from '../data/site';
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const links = [
-  { href: `${base}/#sobre-mi`, label: 'Sobre mí' },
-  { href: `${base}/#proyectos`, label: 'Proyectos' },
-  { href: `${base}/#servicios`, label: 'Servicios' },
-  { href: `${base}/#skills`, label: 'Skills' },
+  { href: `${base}/`, label: 'Inicio' },
+  { href: `${base}/sobre-mi/`, label: 'Sobre mí' },
+  { href: `${base}/proyectos/`, label: 'Proyectos' },
+  { href: `${base}/servicios/`, label: 'Servicios' },
+  { href: `${base}/skills/`, label: 'Skills' },
 ];
+const path = Astro.url.pathname.replace(/\/?$/, '/');
+const isActive = (href: string) => href === `${base}/` ? path === href : path.startsWith(href);
 ---
 <header class="nav">
   <div class="wrap nav-inner">
@@ -16,8 +19,8 @@ const links = [
     <nav aria-label="Principal">
       <button class="menu-btn mono" aria-expanded="false" aria-controls="menu">menú</button>
       <ul id="menu">
-        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
-        <li><a class="nav-cta" href={`${base}/#contacto`}>Contacto</a></li>
+        {links.map((l) => <li><a href={l.href} class:list={[{ active: isActive(l.href) }]} aria-current={isActive(l.href) ? 'page' : undefined}>{l.label}</a></li>)}
+        <li><a class="nav-cta" href="#contacto">Contacto</a></li>
       </ul>
     </nav>
   </div>
@@ -52,6 +55,7 @@ const links = [
   ul { list-style: none; margin: 0; padding: 5px; display: flex; align-items: center; gap: 2px; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(10,8,7,.35); backdrop-filter: blur(12px); }
   ul a { display: block; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-family: var(--mono); font-size: 13px; color: var(--muted); transition: color 0.2s, background 0.2s; }
   ul a:hover { color: var(--text); background: var(--surface); }
+  ul a.active { color: var(--text); background: var(--surface); }
   .nav-cta { color: #fff !important; background: var(--accent); margin-left: 4px; }
   .nav-cta:hover { background: var(--accent-2) !important; }
   .menu-btn { display: none; background: none; border: 1px solid var(--line); color: var(--text); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
