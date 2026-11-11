@@ -1,0 +1,87 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Cover from '../../components/Cover.astro';
+
+export async function getStaticPaths() {
+  const list = (await getCollection('projects', (p) => !p.data.draft))
+    .sort((a, b) => a.data.order - b.data.order || b.data.year - a.data.year);
+  return list.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, index: i, next: list[(i + 1) % list.length] },
+  }));
+}
+
+const { project, index, next } = Astro.props;
+const p = project.data;
+const { Content } = await render(project);
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+---
+<Base title={p.title} description={p.summary}>
+  <article class="wrap project" style={`--c:color-mix(in srgb, ${p.color} 35%, #ff5b1f)`}>
+    <a class="back mono" href={`${base}/#proyectos`}>← Todos los proyectos</a>
+    <header>
+      <p class="label">{p.category}</p>
+      <h1>{p.title}</h1>
+      <p class="summary">{p.summary}</p>
+    </header>
+
+    <dl class="facts">
+      <div><dt class="mono">Año</dt><dd>{p.year}</dd></div>
+      <div><dt class="mono">Estado</dt><dd>{p.status}</dd></div>
+      <div class="wide"><dt class="mono">Stack</dt><dd class="chips">{p.stack.map((t) => <span class="chip">{t}</span>)}</dd></div>
+    </dl>
+
+    {(p.live || p.repo) && (
+      <div class="links">
+        {p.live && <a class="btn btn-primary" href={p.live} target="_blank" rel="noopener">Ver sitio <span class="arrow">↗</span></a>}
+        {p.repo && <a class="btn" href={p.repo} target="_blank" rel="noopener">Código <span class="arrow">↗</span></a>}
+      </div>
+    )}
+
+    <div class="hero-cover"><Cover project={project} index={index} tall /></div>
+
+    <div class="prose"><Content /></div>
+
+    <a class="next" href={`${base}/proyectos/${next.id}/`}>
+      <span class="mono">Siguiente proyecto</span>
+      <span class="next-title">{next.data.title} <span aria-hidden="true">→</span></span>
+    </a>
+  </article>
+</Base>
+
+<style>
+  .project { padding-top: 120px; padding-bottom: 80px; }
+  .back { color: var(--muted); text-decoration: none; }
+  .back:hover { color: var(--accent); }
+  header { margin: 40px 0 32px; max-width: 900px; }
+  h1 { font-size: clamp(44px, 9vw, 116px); line-height: 0.92; letter-spacing: -0.04em; margin: 12px 0 20px; font-weight: 800; font-stretch: 118%; }
+  .summary { font-size: clamp(18px, 2.2vw, 23px); color: var(--muted); margin: 0; line-height: 1.45; }
+  .facts { display: grid; grid-template-columns: 140px 180px 1fr; gap: 0; margin: 0 0 28px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .facts div { padding: 18px 20px 18px 0; }
+  dt { color: var(--c); font-size: 12px; margin-bottom: 4px; }
+  dd { margin: 0; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .links { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+  .links .btn-primary { background: var(--c); border-color: var(--c); }
+  .hero-cover { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); }
+  .prose { max-width: 720px; margin: clamp(40px, 6vw, 72px) auto 0; font-size: 18px; color: #d9cfc3; }
+  .prose :global(h2) { font-size: 30px; letter-spacing: -0.03em; margin: 48px 0 12px; color: var(--text); line-height: 1.15; }
+  .prose :global(h2:first-child) { margin-top: 0; }
+  .prose :global(ul) { padding-left: 20px; }
+  .prose :global(li) { margin: 8px 0; }
+  .prose :global(li::marker) { color: var(--c); }
+  .prose :global(strong) { color: var(--text); }
+  .prose :global(a) { color: var(--c); }
+  .prose :global(img) { border-radius: 14px; border: 1px solid var(--line); margin: 24px 0; }
+  .prose :global(blockquote) { margin: 24px 0; padding: 14px 20px; border-left: 3px solid var(--c); background: var(--bg-2); color: var(--muted); border-radius: 0 10px 10px 0; }
+  .prose :global(blockquote p) { margin: 0; }
+  .next { display: flex; flex-direction: column; gap: 6px; margin-top: 96px; padding-top: 32px; border-top: 1px solid var(--line); text-decoration: none; }
+  .next .mono { color: var(--muted); }
+  .next-title { font-size: clamp(32px, 5.6vw, 68px); font-weight: 800; font-stretch: 118%; letter-spacing: -0.035em; line-height: 1; transition: color 0.2s; }
+  .next:hover .next-title { color: var(--accent); }
+  @media (max-width: 640px) {
+    .facts { grid-template-columns: 1fr 1fr; }
+    .facts .wide { grid-column: 1 / -1; border-top: 1px solid var(--line); }
+  }
+</style>

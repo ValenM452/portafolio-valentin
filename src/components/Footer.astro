@@ -1,0 +1,26 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+const socials = [
+  { label: 'GitHub', href: site.github },
+  { label: 'LinkedIn', href: site.linkedin },
+  { label: 'WhatsApp', href: site.whatsapp },
+].filter((s) => s.href);
+---
+<footer class="footer">
+  <div class="wrap row">
+    <p class="mono">© {year} {site.name}. Hecho con Astro.</p>
+    <ul>
+      {socials.map((s) => <li><a class="mono" href={s.href} target="_blank" rel="noopener">{s.label} ↗</a></li>)}
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .footer { border-top: 1px solid var(--line); padding: 28px 0; }
+  .row { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  p { margin: 0; color: var(--dim); }
+  ul { list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; }
+  a { color: var(--muted); text-decoration: none; }
+  a:hover { color: var(--accent); }
+</style>

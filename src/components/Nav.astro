@@ -1,0 +1,66 @@
+---
+import { site } from '../data/site';
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const links = [
+  { href: `${base}/#sobre-mi`, label: 'Sobre mí' },
+  { href: `${base}/#proyectos`, label: 'Proyectos' },
+  { href: `${base}/#servicios`, label: 'Servicios' },
+  { href: `${base}/#skills`, label: 'Skills' },
+];
+---
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href={`${base}/`} class="brand" aria-label="Inicio">
+      <span class="mark">V</span><span class="mono">{site.short}</span>
+    </a>
+    <nav aria-label="Principal">
+      <button class="menu-btn mono" aria-expanded="false" aria-controls="menu">menú</button>
+      <ul id="menu">
+        {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        <li><a class="nav-cta" href={`${base}/#contacto`}>Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.menu-btn');
+  const menu = document.getElementById('menu');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    btn.textContent = open ? 'menú' : 'cerrar';
+    menu?.classList.toggle('open', !open);
+  });
+  menu?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+    menu.classList.remove('open');
+    btn?.setAttribute('aria-expanded', 'false');
+    if (btn) btn.textContent = 'menú';
+  }));
+  const nav = document.querySelector('.nav');
+  const onScroll = () => nav?.classList.toggle('scrolled', window.scrollY > 12);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+
+<style>
+  .nav { position: fixed; top: 0; left: 0; right: 0; z-index: 50; transition: background 0.3s, border-color 0.3s; border-bottom: 1px solid transparent; }
+  .nav.scrolled { background: rgba(10, 8, 7, 0.8); backdrop-filter: blur(14px); border-color: var(--line); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .mark { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: var(--accent); color: #fff; font-weight: 800; font-size: 17px; font-stretch: 120%; }
+  ul { list-style: none; margin: 0; padding: 5px; display: flex; align-items: center; gap: 2px; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; background: rgba(10,8,7,.35); backdrop-filter: blur(12px); }
+  ul a { display: block; padding: 8px 14px; border-radius: 999px; text-decoration: none; font-family: var(--mono); font-size: 13px; color: var(--muted); transition: color 0.2s, background 0.2s; }
+  ul a:hover { color: var(--text); background: var(--surface); }
+  .nav-cta { color: #fff !important; background: var(--accent); margin-left: 4px; }
+  .nav-cta:hover { background: var(--accent-2) !important; }
+  .menu-btn { display: none; background: none; border: 1px solid var(--line); color: var(--text); padding: 8px 14px; border-radius: 999px; cursor: pointer; }
+
+  @media (max-width: 760px) {
+    .menu-btn { display: block; }
+    ul { position: fixed; top: 72px; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; padding: 12px var(--gutter) 24px; background: rgba(10, 8, 7, 0.97); border: 0; border-bottom: 1px solid var(--line); border-radius: 0; transform: translateY(-8px); opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s; }
+    ul.open { opacity: 1; transform: none; pointer-events: auto; }
+    ul a { font-size: 22px; font-family: var(--display); padding: 14px 4px; border-radius: 0; border-bottom: 1px solid var(--line); }
+    .nav-cta { background: none; margin: 0; color: var(--accent) !important; }
+  }
+</style>

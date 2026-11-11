@@ -1,0 +1,50 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Cover from './Cover.astro';
+
+interface Props { project: CollectionEntry<'projects'>; index: number; size?: 'big' | 'small'; }
+const { project, index, size = 'small' } = Astro.props;
+const p = project.data;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const href = `${base}/proyectos/${project.id}/`;
+---
+<article class={`card ${size}`} style={`--c:${p.color}; --d:${(index % 3) * 0.08}s`} data-glow>
+  <a href={href} class="cover-link" aria-label={`Ver ${p.title}`}>
+    <Cover project={project} index={index} />
+  </a>
+  <div class="body">
+    <div class="meta mono">
+      <span>{p.category}</span>
+      <span class={`status s-${p.status.replace(' ', '-')}`}>{p.status}</span>
+    </div>
+    <h3><a href={href}>{p.title}<span class="go" aria-hidden="true">↗</span></a></h3>
+    <p>{p.summary}</p>
+    <ul class="stack">
+      {p.stack.slice(0, size === 'big' ? 5 : 3).map((s) => <li class="chip">{s}</li>)}
+    </ul>
+  </div>
+</article>
+
+<style>
+  .card { position: relative; display: flex; flex-direction: column; background: var(--bg-2); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; transition: border-color 0.3s, transform 0.4s cubic-bezier(.2,.7,.2,1); isolation: isolate; }
+  .card::after { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 0.3s; background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 91, 31, .14), transparent 60%); }
+  .card:hover { border-color: rgba(255, 91, 31, .55); transform: translateY(-4px); }
+  .card:hover::after { opacity: 1; }
+  .cover-link { display: block; overflow: hidden; }
+  .cover-link :global(.cover) { transition: transform 0.7s cubic-bezier(.2,.7,.2,1); }
+  .card:hover .cover-link :global(.cover) { transform: scale(1.035); }
+  .body { padding: 22px 22px 24px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .meta { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 12px; }
+  .status { color: var(--dim); }
+  .status::before { content: '●'; margin-right: 6px; font-size: 9px; vertical-align: 2px; }
+  .s-publicado::before { color: var(--ok); }
+  .s-en-desarrollo::before { color: var(--accent); }
+  .s-privado::before { color: var(--dim); }
+  h3 { margin: 0; font-size: 26px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 650; font-stretch: 115%; }
+  h3 a { text-decoration: none; }
+  .go { display: inline-block; margin-left: 8px; color: var(--accent); transition: transform 0.25s; font-size: 0.8em; }
+  .card:hover .go { transform: translate(3px, -3px); }
+  p { margin: 0; color: var(--muted); font-size: 15.5px; }
+  .stack { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: auto 0 0; padding: 8px 0 0; }
+  .big h3 { font-size: clamp(28px, 3.2vw, 38px); }
+</style>
